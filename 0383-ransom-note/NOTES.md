@@ -1,6 +1,7 @@
 <h2>ConcurrentModificationException</h2>
 
-- 싱글 스레드 환경에서도 Collection을 fail-fast iterator하고 있을 때 Collection을 modify 하는 걸 허용하지 않는다.
+- Multi threads 환경에서 또는 객체의 변경이 허용되지 않는 환경에서 concurrent modification이 일어날 때 이 예외가 발생할 수 있다. 예를 들면 한 스레드가 Collection을 Iterating 하고 있을 때 다른 스레드에서 Collection을 modify 하는 경우이다.
+- <b>그러나 싱글 스레드 환경에서도 Collection을 fail-fast iterator하고 있을 때 Collection을 modify 하는 걸 허용하지 않는다.</b>
 
 <h2>fail-fast iterator</h2>
 
