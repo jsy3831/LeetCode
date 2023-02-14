@@ -1,11 +1,12 @@
 class MyLinkedList {
 
-    class Node {
+    static class Node {
 		Node next = null;
+		Node prev = null; // double linked list
 		int val = 0;
 
 		public Node(int val) {
-			this.val =  val;
+			this.val = val;
 		}
 	}
 
@@ -19,46 +20,61 @@ class MyLinkedList {
 		this.size = 0;
 	}
 
+	public int getSize() {
+		return this.size;
+	}
+
 	public int get(int index) {
 		if (index < 0 || index >= this.size) return -1;
 
-		Node curr = this.head;
-		while (index-- > 0) {
-			curr = curr.next; // 헤드노드에서부터 하나씩 순회해야함, O(N)
+		Node cur = this.head;
+		while (index > 0) {
+			cur = cur.next;
+			index--;
 		}
-		return curr.val;
+
+		return  cur.val;
 	}
 
-	public Node getNodeAt(int index) {
-		Node curr = this.head;
-		while (index-- > 0) {
-			curr = curr.next;
+	public Node getNode(int index) {
+		if (index < 0 || index >= this.size) return null;
+
+		Node cur = this.head;
+		while (index > 0) {
+			cur = cur.next;
+			index--;
 		}
-		return curr;
+
+		return cur;
 	}
 
 	public void addAtHead(int val) {
-		Node node = new Node(val);
+		Node cur = new Node(val);
+
 		if (this.size == 0) {
-			this.head = node;
-			this.tail = node;
+			this.head = cur;
+			this.tail = cur;
 		} else {
-			node.next = this.head; // 새노드에 현재 헤드노드 연결
-			this.head = node; // 헤드노드에 새노드 할당
+			cur.next = this.head;
+			this.head.prev = cur; // 기존 헤드노드의 prev에 새노드 연결
+			this.head = cur;
 		}
+
 		this.size++;
 	}
 
 	public void addAtTail(int val) {
-		Node node = new Node(val);
+		Node cur = new Node(val);
+
 		if (this.size == 0) {
-			this.head = node;
-			this.tail = node;
+			this.head = cur;
+			this.tail = cur;
 		} else {
-			this.tail.next = node; // 현재 테일노드에 새노드 연결
-			node.next = null; // 어차피 null로 초기화돼있는데 여기서 또 해줘야하나..?
-			this.tail = node; // 테일노드에 새노드 할당
+			cur.prev = this.tail; // 새노드의 prev에 기존 테일노드 연결
+			this.tail.next = cur;
+			this.tail = cur;
 		}
+
 		this.size++;
 	}
 
@@ -70,43 +86,53 @@ class MyLinkedList {
 		} else if (index == this.size) {
 			addAtTail(val);
 		} else {
-			Node prev = getNodeAt(index-1);
-			Node forw = prev.next;
+			Node next = getNode(index);
+			Node prev = next.prev;
 
 			Node curr = new Node(val);
+			curr.prev = prev;
+			curr.next = next;
+			// link cur with prev and next.
+
 			prev.next = curr;
-			curr.next = forw;
+			next.prev = curr;
+			// re-link prev and next with cur.
 
 			this.size++;
 		}
-
 	}
 
-	public void deleteHead() {
-		if (this.size == 0) return;
-		else if (this.size == 1) {
+	public void deleteAtHead() {
+		if (this.size == 0) {
+			return;
+		} else if (this.size == 1) {
 			this.head = null;
 			this.tail = null;
 		} else {
-			Node curr = this.head;
-			Node forw = curr.next;
-			curr.next = null;
-			this.head = forw;
+			Node cur = this.head;
+			Node next = cur.next;
+
+			cur.next = null;
+			next.prev = null;
+			this.head = next;
 		}
 
 		this.size--;
 	}
 
-	public void deleteTail() {
-		if (this.size == 0) return;
-		else if (this.size == 1) {
+	public void deleteAtTail() {
+		if (this.size == 0) {
+			return;
+		} else if (this.size == 1) {
 			this.head = null;
 			this.tail = null;
 		} else {
-			Node secondLast = getNodeAt(this.size-2);
+			Node tail = getNode(this.size-1);
+			Node secondLast = tail.prev;
 			secondLast.next = null;
 			this.tail = secondLast;
 		}
+
 		this.size--;
 	}
 
@@ -114,15 +140,20 @@ class MyLinkedList {
 		if (index < 0 || index >= this.size) return;
 
 		if (index == 0) {
-			deleteHead();
+			deleteAtHead();
 		} else if (index == this.size-1) {
-			deleteTail();
+			deleteAtTail();
 		} else {
-			Node prev = getNodeAt(index-1);
-			Node curr = prev.next;
-			Node forw = prev.next.next;
-			prev.next = forw;
-			curr.next = null;
+			Node cur = getNode(index);
+			Node prev = cur.prev;
+			Node next = cur.next;
+
+			prev.next = next;
+			next.prev = prev;
+
+			cur.next = null;
+			cur.prev = null;
+
 			this.size--;
 		}
 	}
