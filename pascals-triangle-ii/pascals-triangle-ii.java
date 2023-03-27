@@ -1,15 +1,17 @@
 class Solution {
     public List<Integer> getRow(int rowIndex) {
-        List<Integer> ans = new ArrayList<>();
+		List<Integer> curRow = new ArrayList<>();
+		curRow.add(1);
 
-		for (int i = 0; i <= rowIndex; i++) {
-			ans.add(1);
+		if (rowIndex == 0)
+			return curRow;
 
-			for (int j = i - 1; j > 0; j--) {
-				ans.set(j, ans.get(j - 1) + ans.get(j));
-			}
+		List<Integer> prevRow = getRow(rowIndex - 1);
+		for (int i = 0; i < prevRow.size() - 1; i++) {
+			curRow.add(prevRow.get(i) + prevRow.get(i + 1));
 		}
-		
-		return ans;
-    }
+
+		curRow.add(1);
+		return curRow;
+	}
 }
