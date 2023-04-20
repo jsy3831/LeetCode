@@ -7,7 +7,7 @@ class Solution {
         // there is no rotation
         if (nums[left] < nums[right]) return nums[left];
 
-        while (left <= right) {
+        while (left < right) {
             int mid = left + (right - left) / 2;
 
             if (nums[mid] > nums[right])
@@ -18,6 +18,6 @@ class Solution {
                 right--;
         }
 
-        return nums[left];
+        return nums[right];
     }
 }
