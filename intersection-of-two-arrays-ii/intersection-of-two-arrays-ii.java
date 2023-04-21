@@ -1,19 +1,27 @@
 class Solution {
     public int[] intersect(int[] nums1, int[] nums2) {
-        Map<Integer, Integer> map = new HashMap<>();
-		List<Integer> list = new ArrayList<>();
+        Arrays.sort(nums1);
+        List<Integer> list = new ArrayList<>();
+        for (int num : nums2)
+            binarySearch(nums1, num, list);
+        return list.stream().mapToInt(i -> i).toArray();
+    }
 
-		for (int i : nums1) {
-			map.put(i, map.getOrDefault(i, 0) + 1);
-		}
+    private void binarySearch(int[] nums1, int target, List<Integer> list) {
+        int left = 0, right = nums1.length - 1;
 
-		for (int i : nums2) {
-			if (map.containsKey(i) && map.get(i) > 0) {
-				list.add(i);
-				map.put(i, map.get(i) - 1);
-			}
-		}
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
 
-		return list.stream().mapToInt(i -> i).toArray();
+            if (nums1[mid] == target) {
+                list.add(nums1[mid]);
+                nums1[mid] = -1;
+                Arrays.sort(nums1);
+                break;
+            } else if (nums1[mid] < target)
+                left = mid + 1;
+            else
+                right = mid - 1;
+        }
     }
 }
