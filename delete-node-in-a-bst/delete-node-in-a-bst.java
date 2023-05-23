@@ -19,10 +19,8 @@ class Solution {
 
         if (key < root.val) {
             root.left = deleteNode(root.left, key);
-            return root;
         } else if (key > root.val) {
             root.right = deleteNode(root.right, key);
-            return root;
         } else {
             if (root.left == null) {
                 return root.right;
